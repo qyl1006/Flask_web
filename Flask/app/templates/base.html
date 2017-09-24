@@ -1,0 +1,84 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block title %}X博客{% endblock %}
+
+<!---定义收藏夹图标--->
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+     <div class="container">
+     	  <div class="navbar-header">
+   	       <button type="button" class="navbar-toggle"
+		data-toggle="collapse" data-target=".navbar-collapse">
+		   <span class="sr-only">Toggle navigation</span>
+		   <span class="icon-bar"></span>
+		   <span class="icon-bar"></span>
+		   <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="/">博客</a>
+	  </div>
+	  <div class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+		    
+		    {% if current_user.is_authenticated %}
+		    <li>
+			<a href="{{ url_for('main.user', username=current_user.username) }}">
+			    个人中心
+			</a>
+		    </li>
+		    {% endif %}
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+		    {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+		    <li><a href="{{ url_for('main.moderate') }}">管理评论</a></li>
+		    {% endif %}
+		    {% if current_user.is_authenticated %}
+		<!-- 这下面应该是一个下拉列表的列表选项，这个应该是下拉列表的显示按钮 -->
+		    <li class="dropdown">                                
+                    		   <a href="#" class="dropdown-toggle" data-toggle="dropdown">  
+                                   <img src="{{ current_user.gravatar(size=18) }}">  
+                                    Account <b class="caret"></b></a>  
+  
+                    <ul class="dropdown-menu">           <!-- 注意这里有个dropdown后面有个menu，就是下拉菜单里面内容 -->  
+		    <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
+		    <li><a href="{{ url_for('auth.old_password_modified') }}">更改密码</a></li>
+		    {% else %}
+		    <li><a href="{{ url_for('auth.login') }}">登录</a></li>
+		   
+		    {% endif %}
+		   
+		</ul>
+	  </div>
+     </div>
+</div>
+{% endblock %}
+
+<!-----渲染Flash消息----------->
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+<!---------------使用Bootstrap的CSS样式渲染？---------------------------------->
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+	{{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+<!------添加本地化日期和时间，使用中文zh-CN------------->
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang("zh-CN") }}
+{% endblock %}
+

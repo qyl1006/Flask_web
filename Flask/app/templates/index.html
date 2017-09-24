@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}X博客{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+      <h1>你好,
+      {% if current_user.is_authenticated %}
+	  {{ current_user.username }}
+	  <br>
+		永远相信美好的事情 即将发生
+      {% else %}
+	  同学
+	  <br>
+		永远相信美好的事情 即将发生
+      {% endif %}
+      </h1>
+</div>
+<div>
+    {% if current_user.can(Permission.WRITE_ARTICLES) %}
+    {{ wtf.quick_form(form) }}
+    {% endif %}
+</div>
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+	<li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">全部</a></li>
+	{% if current_user.is_authenticated %}
+	<li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">关注的人</a></li>
+	{% endif %}
+    </ul>
+
+    {% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}
+
+
+
+
+
+
+
+

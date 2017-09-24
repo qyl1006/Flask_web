@@ -1,0 +1,8 @@
+<p>您好， {{ user.username }},</p>
+<p>Welcome to <b>豆瓣小组</b>!</p>
+<p>To confirm your account please <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">click here</a>.</p>  <!---这里生成的是超链接按钮--->
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>    <!-----一般来说url_for生成的是 相对路径，有了_external=True以后，就可以生成包括http的全部路径了---->
+<p>Sincerely,</p>          <!--然后上一行，通过<p>来将整段验证代码显示出来，和平时我们注册网站时收到的邮件一模一样--->
+<p>The Flasky Team</p>
+<p><small>Note: replies to this email address are not monitored.</small></p>

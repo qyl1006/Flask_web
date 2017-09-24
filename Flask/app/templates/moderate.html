@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+<!------引入宏模块，，分页功能--------->
+{% import "_macros.html" as macros %}
+
+{% block title %}博客-管理评论{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>管理评论</h1>
+</div>
+<!----set指令定义一个模块变量moderate--------->
+{% set moderate = True %}
+{% include '_comments.html' %}
+{% if pagination %}
+<div class="pagination">
+     {{ macros.pagination_widget(pagination, '.moderate') }}
+</div>
+{% endif %}
+{% endblock %}
+
