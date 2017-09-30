@@ -55,3 +55,18 @@ class PasswordResetForm(Form):
 								message='两个密码不一致')])
 	password2 = PasswordField('再次输入你的密码', validators=[Required()])
 	submit = SubmitField('确认更改')
+	
+	def validate_email(self, field):
+		if User.query.filter_by(email=field.data).first() is None:
+			raise ValidationError('无效邮箱')
+			
+#####更换邮箱的表单
+class ChangeEmailForm(Form):
+	email = StringField('输入你的新邮箱', validators=[Required(), Length(1, 64), 
+													Email()])
+	password = PasswordField('输入你的密码以验证', validators=[Required()])
+	submit = SubmitField('确认')
+	
+	def validate_email(self, field):
+		if User.query.filter_by(email=field.data).first():
+			raise ValidationError('该邮箱已存在')

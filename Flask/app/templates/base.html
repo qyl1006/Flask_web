@@ -49,6 +49,8 @@
                     <ul class="dropdown-menu">           <!-- 注意这里有个dropdown后面有个menu，就是下拉菜单里面内容 -->  
 		    <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
 		    <li><a href="{{ url_for('auth.old_password_modified') }}">更改密码</a></li>
+		   
+		    <li><a href="{{ url_for('auth.change_email_request') }}">更换邮箱</a></li>
 		    {% else %}
 		    <li><a href="{{ url_for('auth.login') }}">登录</a></li>
 		   
