@@ -38,3 +38,20 @@ class Old_password_modifiedForm(Form):
 	new_password2 = PasswordField('再次输入你的新密码密码', validators=[Required()])
 	submit = SubmitField('确认更改')
 	
+
+
+###通过邮箱验证后重设密码。。。。输入email的表单，用来send_email
+class PasswordResetRequestForm(Form):
+	email = StringField('输入你的邮箱', validators=[Required(), Length(1, 64),
+													Email()])
+	submit = SubmitField('确认发送')
+
+
+######接上。。。重置新密码的表单
+class PasswordResetForm(Form):
+	email = StringField('输入你的邮箱', validators=[Required(), Length(1, 64),
+										Email()])
+	password = PasswordField('输入你的新密码', validators=[Required(), EqualTo('password2',
+								message='两个密码不一致')])
+	password2 = PasswordField('再次输入你的密码', validators=[Required()])
+	submit = SubmitField('确认更改')

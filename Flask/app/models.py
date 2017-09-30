@@ -199,7 +199,7 @@ class User(UserMixin, db.Model):
 	def confirm(self, token):
 		s = Serializer(current_app.config['SECRET_KEY'])
 		try:
-			data = s.loads(token)  ##? 不明白token为什么是令牌字符串！？哪里有赋值？
+			data = s.loads(token)  ##? 不明白token为什么是令牌字符串！？哪里有赋值？现在明白，邮件带有token
 		except:
 			return False
 		if data.get('confirm') != self.id:
@@ -207,6 +207,24 @@ class User(UserMixin, db.Model):
 		self.confirmed = True
 		db.session.add(self)
 		return True
+	
+################################通过验证邮件，重置密码####   大致上和以上两个函数相试
+	def generate_reset_token(self, expiration=3600):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'reset': self.id})
+	
+	def reset_password(self, token, new_password):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return False
+		if data.get('reset') != self.id:
+			return False
+		self.password = new_password
+		db.session.add(self)
+		return True
+		
 	
 	###定义默认的用户角色，
 	def __init__(self, **kwargs):
