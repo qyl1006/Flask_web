@@ -7,12 +7,12 @@ from config import config
 from flask_login import LoginManager
 from flask_pagedown import PageDown
 
+
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 pagedown = PageDown()  ##初始化Flask-PageDown
 db = SQLAlchemy()
-
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'

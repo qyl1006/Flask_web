@@ -1,5 +1,6 @@
 from datetime import datetime  #关于渲染时间的一个变量
-from flask import render_template, session, redirect, url_for, current_app, flash, request, make_response
+from flask import render_template, session, redirect, url_for, current_app, \
+					flash, request, make_response, send_from_directory
 from flask_login import login_required, current_user
 from . import main
 from .forms import PostForm, EditProfileForm, EditProfileAdminForm, CommentForm
@@ -7,6 +8,16 @@ from .. import db
 from ..models import User, Role, Permission, Post, Follow, Comment
 from ..email import send_email
 from ..decorators import admin_required, permission_required
+import os
+from werkzeug import secure_filename
+
+
+UPLOAD_FOLDER=r'/home/qyl/Flask_web/Flask/app/upload'
+ALLOWED_EXTENSIONS=set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+MAX_CONTENT_LENGTH = 16 * 200 * 100 ####好像图片大少限制没有起作用！？
+
+def allowed_file(filename):
+	return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 ##处理首页博客文章的路由
 @main.route('/', methods=['GET', 'POST'])
@@ -259,3 +270,23 @@ def moderate_disable(id):
 	db.session.add(comment)
 	return redirect(url_for('.moderate',
 								page=request.args.get('page', 1, type=int)))
+
+
+###自定义上传图片 试试
+@main.route('/upload_file', methods = ['GET', 'POST'])
+def upload_file():
+	if request.method == 'POST':
+		file = request.files['file']
+		if file and allowed_file(file.filename):
+			filename = secure_filename(file.filename)
+			file.save(os.path.join(UPLOAD_FOLDER, file.filename))
+			
+			return redirect(url_for('.uploaded_file', filename=filename))
+		return '<p> 你上传的文件类型不支持</p>'
+	return render_template('upload_file.html')
+
+
+##预览图片
+@main.route('/uploaded_file/<filename>')
+def uploaded_file(filename):
+	return send_from_directory(UPLOAD_FOLDER, filename)
