@@ -42,7 +42,7 @@ def register():
 		token = user.generate_confirmation_token()
 		send_email(user.email, '确认您的帐号', 
 					'auth/email/confirm', user=user, token=token)
-		flash('已通过电子邮件向您发送确认电子邮件')
+		flash('已通过email向您发送确认电子邮件')
 		return redirect(url_for('main.index'))
 	return render_template('auth/register.html', form=form)
 
@@ -142,7 +142,7 @@ def password_reset(token):
 
 
 #####通过发送邮件验证更换邮箱。。。。发送邮件路由
-@auth.route('/change-email', methods=['GET', 'POST'])
+@auth.route('/change_email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
 	form = ChangeEmailForm()
